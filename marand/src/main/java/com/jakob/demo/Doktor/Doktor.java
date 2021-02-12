@@ -2,40 +2,40 @@ package com.jakob.demo.Doktor;
 
 import com.fasterxml.jackson.annotation.*;
 import com.jakob.demo.Pacient.Patient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "doktors")
+@EntityListeners(AuditingEntityListener.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-        "doktorId",
-        "department",
-        "patients"
-
-})
-
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Doktor implements Serializable {
     private static final long serialversionUID = 1L;
-    @JsonProperty("doktorId")
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonProperty("department")
-    @Column(name = "department")
+
     private String department;
 
 
-    @OneToMany(mappedBy = "doktor",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonProperty(value = "patients")
-    private List<Patient> patients;
+    @Autowired
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Patient> patients = new ArrayList<>();
 
-    public Doktor(){};
+    public Doktor() {
+    }
+
+    ;
 
     public Doktor(String department, List<Patient> patients) {
         this.department = department;
